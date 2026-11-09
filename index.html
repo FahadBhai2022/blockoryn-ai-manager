@@ -1,106 +1,188 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#0b1220">
-  <meta name="description" content="Blockoryn AI Manager — crypto education content workspace">
-  <link rel="manifest" href="./manifest.webmanifest">
-  <title>Blockoryn AI Manager</title>
-  <style>
-    :root{color-scheme:dark;--bg:#080e19;--panel:#111c2d;--line:#26364d;--muted:#9aabc1;--text:#edf4ff;--accent:#35d0bd;--blue:#5797ff}
-    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 90% 0,#142c45 0,transparent 34%),var(--bg);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,sans-serif}
-    .wrap{max-width:760px;margin:auto;padding:22px 16px 48px}.top{display:flex;align-items:center;gap:12px;margin-bottom:26px}
-    .logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--blue));display:grid;place-items:center;color:#071321;font-weight:900;font-size:20px}
-    h1{font-size:20px;margin:0}.sub{color:var(--muted);font-size:12px;margin-top:3px}
-    .eyebrow{color:var(--accent);font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
-    h2{font-size:23px;margin:7px 0}.intro{color:var(--muted);line-height:1.55;margin:0 0 20px}
-    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}
-    .tile,.editor{background:linear-gradient(160deg,#142238,var(--panel));border:1px solid var(--line);border-radius:17px;padding:16px}
-    .tile .ico{font-size:22px}.tile h3{font-size:14px;margin:10px 0 5px}.tile p{font-size:12px;color:var(--muted);margin:0;line-height:1.45}
-    .editor{margin-top:18px}.editor h3{margin:0 0 14px;font-size:17px}
-    label{display:block;font-size:12px;color:#c1cee0;margin:12px 0 6px}
-    input,textarea{width:100%;background:#091321;border:1px solid #30425b;border-radius:10px;color:var(--text);padding:12px;font:inherit;outline:none}
-    textarea{min-height:150px;resize:vertical;line-height:1.5}
-    input:focus,textarea:focus{border-color:var(--accent)}
-    .actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:13px}
-    button,.linkbtn{border:0;border-radius:10px;padding:11px 14px;font-weight:700;font-size:13px;cursor:pointer;text-decoration:none}
-    .primary{background:var(--accent);color:#06151a}.secondary{background:#24354d;color:var(--text)}
-    .status{font-size:12px;color:var(--accent);min-height:18px;margin-top:10px}
-    .links{display:flex;gap:16px;flex-wrap:wrap;margin-top:20px}.links a{color:#8dbaff;font-size:13px}
-    .notice{border-left:3px solid #e7b85c;background:#211e19;color:#e7d7b5;padding:12px;border-radius:8px;font-size:12px;line-height:1.5;margin-top:18px}
-    footer{color:#74869f;font-size:11px;margin-top:26px;text-align:center}
-    @media(max-width:430px){.grid{grid-template-columns:1fr 1fr}.wrap{padding:18px 13px 36px}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1220">
+<title>Blockoryn AI Manager</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#080e19;color:#edf2ff;font-family:Arial,sans-serif;padding:20px}
+main{max-width:760px;margin:auto}
+h1{color:#65d6b0;margin-bottom:5px}
+p{color:#aab6ca;line-height:1.5}
+.card{background:#111c2d;border:1px solid #26364c;border-radius:14px;padding:18px;margin:18px 0}
+label{display:block;margin:14px 0 7px;color:#c9d5e7}
+input,textarea{width:100%;padding:13px;background:#091321;color:white;border:1px solid #34465e;border-radius:9px;font-size:15px}
+textarea{min-height:220px;resize:vertical}
+button{padding:12px 17px;border:0;border-radius:9px;background:#65d6b0;color:#07131a;font-weight:bold;margin:8px 5px 0 0;font-size:14px}
+button.secondary{background:#26364c;color:white}
+.status{padding:12px;background:#091321;border-radius:9px;margin-top:12px;color:#65d6b0;overflow-wrap:anywhere}
+small{color:#93a4ba}
+</style>
 </head>
 <body>
-<main class="wrap">
-  <header class="top">
-    <div class="logo">B</div>
-    <div><h1>Blockoryn AI Manager</h1><div class="sub">Your crypto education content workspace</div></div>
-  </header>
-  <div class="eyebrow">Creator dashboard</div>
-  <h2>Build smarter crypto content.</h2>
-  <p class="intro">Plan beginner-friendly articles, prepare SEO details, and keep your publishing workflow organised.</p>
+<main>
+<h1>Blockoryn AI Manager</h1>
+<p>Your crypto education publishing workspace.</p>
 
-  <section class="grid" aria-label="Workspace tools">
-    <article class="tile"><div class="ico">✍️</div><h3>Article Studio</h3><p>Draft clear educational articles for your readers.</p></article>
-    <article class="tile"><div class="ico">🔎</div><h3>SEO Workspace</h3><p>Prepare a focus keyword and search description.</p></article>
-    <article class="tile"><div class="ico">📰</div><h3>Publishing</h3><p>Open Blogger to publish your finished draft.</p></article>
-    <article class="tile"><div class="ico">📈</div><h3>Search Insights</h3><p>Review your site's performance in Search Console.</p></article>
-  </section>
+<div class="card">
+<h3>① Connect Blogger</h3>
+<p>Connect your Google account to publish articles directly to Blockoryn.</p>
+<button onclick="connect()">Connect with Google</button>
+<div id="status" class="status">Not connected</div>
+</div>
 
-  <section class="editor">
-    <h3>Quick article draft</h3>
-    <label for="title">Article title</label>
-    <input id="title" placeholder="e.g. What Is a Crypto Wallet?">
-    <label for="keyword">Focus keyword</label>
-    <input id="keyword" placeholder="e.g. crypto wallet for beginners">
-    <label for="description">SEO description</label>
-    <textarea id="description" style="min-height:76px" placeholder="Write a short search description..."></textarea>
-    <label for="content">Article content</label>
-    <textarea id="content" placeholder="Start writing your educational article here..."></textarea>
-    <div class="actions">
-      <button class="primary" id="save">Save draft</button>
-      <button class="secondary" id="copy">Copy article</button>
-      <button class="secondary" id="download">Download .txt</button>
-    </div>
-    <div class="status" id="status" role="status"></div>
-  </section>
+<div class="card">
+<h3>② Write your article</h3>
+<label>Article title</label>
+<input id="title" placeholder="Enter article title">
 
-  <nav class="links">
-    <a href="https://www.blogger.com/" target="_blank" rel="noopener">Open Blogger ↗</a>
-    <a href="https://search.google.com/search-console" target="_blank" rel="noopener">Search Console ↗</a>
-    <a href="https://blockoryn.blogspot.com/" target="_blank" rel="noopener">Visit Blockoryn ↗</a>
-  </nav>
-  <div class="notice"><strong>Prototype notice:</strong> Drafts are saved only in this browser on this device. Blogger publishing, Google Search Console data, cloud sync and AI writing are not connected yet. Never enter passwords or API keys here.</div>
-  <footer>Blockoryn · Crypto education only · Not financial advice</footer>
+<label>Focus keyword / Label</label>
+<input id="keyword" placeholder="Example: Blockchain">
+
+<label>SEO description (for your notes)</label>
+<input id="description" placeholder="Write a short search description">
+
+<label>Article content (HTML supported)</label>
+<textarea id="content" placeholder="Write your crypto education article here..."></textarea>
+
+<button onclick="saveDraft()">Save draft</button>
+<button class="secondary" onclick="copyArticle()">Copy content</button>
+<button class="secondary" onclick="downloadArticle()">Download TXT</button>
+</div>
+
+<div class="card">
+<h3>③ Publish to Blogger</h3>
+<p>Check your article before publishing. Publishing creates a live Blogger post.</p>
+<button onclick="publish()">Publish article</button>
+<div id="result" class="status">Ready when you are.</div>
+</div>
+
+<p><small>Blockoryn AI Manager · Educational content workspace · Never share your Google Client Secret.</small></p>
 </main>
+
 <script>
-  const ids = ["title","keyword","description","content"];
-  const fields = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
-  const status = document.getElementById("status");
-  function readDraft(){return Object.fromEntries(ids.map(id => [id, fields[id].value]));}
-  function fillDraft(data){ids.forEach(id => fields[id].value = data[id] || "");}
-  try { const saved = localStorage.getItem("blockoryn-draft"); if(saved) fillDraft(JSON.parse(saved)); } catch(e) {}
-  document.getElementById("save").addEventListener("click", () => {
-    try { localStorage.setItem("blockoryn-draft", JSON.stringify(readDraft())); status.textContent = "Draft saved on this device."; }
-    catch(e) { status.textContent = "Could not save in this browser."; }
-  });
-  function articleText(){const d=readDraft();return `${d.title}\n\nFocus keyword: ${d.keyword}\nSEO description: ${d.description}\n\n${d.content}`;}
-  document.getElementById("copy").addEventListener("click", async () => {
-    try { await navigator.clipboard.writeText(articleText()); status.textContent = "Article copied."; }
-    catch(e) { status.textContent = "Copy unavailable. Try downloading the text file."; }
-  });
-  document.getElementById("download").addEventListener("click", () => {
-    const blob = new Blob([articleText()], {type:"text/plain;charset=utf-8"});
-    const url = URL.createObjectURL(blob); const a = document.createElement("a");
-    a.href = url; a.download = "blockoryn-article-draft.txt"; a.click(); URL.revokeObjectURL(url);
-    status.textContent = "Text file prepared.";
-  });
-  if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
-    window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+const CLIENT_ID="405793050200-vqa1flsjc80c9qerbeh2di93stng9dbr.apps.googleusercontent.com";
+const BLOG_HOST="blockoryn.blogspot.com";
+const SCOPE="https://www.googleapis.com/auth/blogger";
+let token="";
+let blogId="";
+
+function message(id,msg){
+ document.getElementById(id).textContent=msg;
+}
+
+function connect(){
+ if(!window.google || !google.accounts){
+  message("status","Google service is loading. Wait a moment and try again.");
+  return;
+ }
+ const client=google.accounts.oauth2.initTokenClient({
+  client_id:CLIENT_ID,
+  scope:SCOPE,
+  callback:async(response)=>{
+   if(response.error){
+    message("status","Google connection failed: "+response.error);
+    return;
+   }
+   token=response.access_token;
+   try{
+    const r=await fetch("https://www.googleapis.com/blogger/v3/users/self/blogs",{
+     headers:{Authorization:"Bearer "+token}
+    });
+    const data=await r.json();
+    if(!r.ok) throw new Error(data.error?.message||"Could not load blogs");
+    const blog=(data.items||[]).find(b=>(b.url||"").includes(BLOG_HOST));
+    if(!blog) throw new Error("Blockoryn blog was not found in this Google account.");
+    blogId=blog.id;
+    message("status","Connected successfully: "+blog.name);
+   }catch(e){
+    token="";
+    message("status",e.message);
+   }
   }
+ });
+ client.requestAccessToken({prompt:"consent"});
+}
+
+function saveDraft(){
+ const draft={
+  title:document.getElementById("title").value,
+  keyword:document.getElementById("keyword").value,
+  description:document.getElementById("description").value,
+  content:document.getElementById("content").value
+ };
+ localStorage.setItem("blockorynDraft",JSON.stringify(draft));
+ message("result","Draft saved on this device.");
+}
+
+function copyArticle(){
+ const content=document.getElementById("content").value;
+ if(!content){message("result","Write article content first.");return;}
+ navigator.clipboard.writeText(content)
+ .then(()=>message("result","Article content copied."))
+ .catch(()=>message("result","Copy was blocked by your browser."));
+}
+
+function downloadArticle(){
+ const title=document.getElementById("title").value||"blockoryn-article";
+ const content=document.getElementById("content").value;
+ const file=new Blob([content],{type:"text/plain;charset=utf-8"});
+ const url=URL.createObjectURL(file);
+ const a=document.createElement("a");
+ a.href=url;
+ a.download=title.replace(/[^a-z0-9]/gi,"-")+".txt";
+ a.click();
+ URL.revokeObjectURL(url);
+}
+
+async function publish(){
+ if(!token||!blogId){
+  message("result","Connect your Blogger account first.");
+  return;
+ }
+ const title=document.getElementById("title").value.trim();
+ const content=document.getElementById("content").value.trim();
+ const keyword=document.getElementById("keyword").value.trim();
+ if(!title||!content){
+  message("result","Please enter an article title and content.");
+  return;
+ }
+ if(!confirm("Publish this article to Blockoryn now?")) return;
+ message("result","Publishing...");
+ const post={title:title,content:content};
+ if(keyword) post.labels=[keyword];
+ try{
+  const r=await fetch(
+   "https://www.googleapis.com/blogger/v3/blogs/"+blogId+"/posts/",
+   {
+    method:"POST",
+    headers:{
+     Authorization:"Bearer "+token,
+     "Content-Type":"application/json"
+    },
+    body:JSON.stringify(post)
+   }
+  );
+  const data=await r.json();
+  if(!r.ok) throw new Error(data.error?.message||"Publishing failed");
+  message("result","Published successfully! "+(data.url||""));
+ }catch(e){
+  message("result","Error: "+e.message);
+ }
+}
+
+try{
+ const saved=JSON.parse(localStorage.getItem("blockorynDraft")||"null");
+ if(saved){
+  document.getElementById("title").value=saved.title||"";
+  document.getElementById("keyword").value=saved.keyword||"";
+  document.getElementById("description").value=saved.description||"";
+  document.getElementById("content").value=saved.content||"";
+ }
+}catch(e){}
 </script>
 </body>
 </html>
