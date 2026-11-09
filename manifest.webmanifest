@@ -1,0 +1,10 @@
+{
+  "name": "Blockoryn AI Manager",
+  "short_name": "Blockoryn",
+  "description": "Crypto education content workspace",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#080e19",
+  "theme_color": "#0b1220",
+  "icons": []
+}
