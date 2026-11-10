@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0b1220">
+ <link rel="manifest" href="./manifest.webmanifest">
 <title>Blockoryn AI Manager</title>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
@@ -168,4 +169,14 @@ try{
 }catch(e){}
 </script>
 </body>
+ <script>
+if ("serviceWorker" in navigator && location.protocol === "https:") {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("./sw.js", { scope: "./" })
+      .catch(function (error) {
+        console.error("Service Worker error:", error);
+      });
+  });
+}
+</script>
 </html>
