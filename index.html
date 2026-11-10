@@ -18,6 +18,7 @@ input,textarea{width:100%;padding:13px;background:#091321;color:white;border:1px
 textarea{min-height:220px;resize:vertical}
 button{padding:12px 17px;border:0;border-radius:9px;background:#65d6b0;color:#07131a;font-weight:bold;margin:8px 5px 0 0;font-size:14px}
 button.secondary{background:#26364c;color:white}
+button:disabled{opacity:.55}
 .status{padding:12px;background:#091321;border-radius:9px;margin-top:12px;color:#65d6b0;overflow-wrap:anywhere}
 small{color:#93a4ba}
 </style>
@@ -35,44 +36,49 @@ small{color:#93a4ba}
 </div>
 
 <div class="card">
-<h3>② Write your article</h3>
-<label>Article title</label>
-<input id="title" placeholder="Enter article title">
+<h3>② Generate with Gemini AI</h3>
+<p>Enter a crypto education topic. Gemini will prepare an original beginner-friendly article with SEO details.</p>
+<label>Article topic</label>
+<input id="topic" placeholder="Example: How do crypto wallets work?">
+<button id="generateBtn" onclick="generateArticle()">Generate Article</button>
+<div id="aiResult" class="status">Ready to generate.</div>
+</div>
 
+<div class="card">
+<h3>③ Review your article</h3>
+<label>SEO title</label>
+<input id="title" placeholder="SEO article title">
 <label>Focus keyword / Label</label>
-<input id="keyword" placeholder="Example: Blockchain">
-
+<input id="keyword" placeholder="Example: Crypto Wallets">
 <label>SEO description (for your notes)</label>
-<input id="description" placeholder="Write a short search description">
-
-<label>Article content (HTML supported)</label>
-<textarea id="content" placeholder="Write your crypto education article here..."></textarea>
-
+<input id="description" placeholder="Short search description">
+<label>Article content (HTML)</label>
+<textarea id="content" placeholder="Your generated article will appear here..."></textarea>
 <button onclick="saveDraft()">Save draft</button>
 <button class="secondary" onclick="copyArticle()">Copy content</button>
 <button class="secondary" onclick="downloadArticle()">Download TXT</button>
 </div>
 
 <div class="card">
-<h3>③ Publish to Blogger</h3>
-<p>Check your article before publishing. Publishing creates a live Blogger post.</p>
+<h3>④ Publish to Blogger</h3>
+<p>Review the article before publishing. Publishing creates a live Blogger post.</p>
 <button onclick="publish()">Publish article</button>
 <div id="result" class="status">Ready when you are.</div>
 </div>
 
-<p><small>Blockoryn AI Manager · Educational content workspace · Never share your Google Client Secret.</small></p>
+<p><small>Blockoryn AI Manager · Educational content workspace · Never share your Google Client Secret or Gemini API key.</small></p>
 </main>
 
 <script>
 const CLIENT_ID="405793050200-vqa1flsjc80c9qerbeh2di93stng9dbr.apps.googleusercontent.com";
 const BLOG_HOST="blockoryn.blogspot.com";
 const SCOPE="https://www.googleapis.com/auth/blogger";
+const GEMINI_BACKEND="https://script.google.com/macros/s/AKfycbwGhKrpHEEKsfaEaP9bul4ka9gy_vON_skOUKcr_ELn49P9Sffwy4OQaK3jx1S8xu--/exec";
 let token="";
 let blogId="";
+let aiTimer=null;
 
-function message(id,msg){
- document.getElementById(id).textContent=msg;
-}
+function message(id,msg){document.getElementById(id).textContent=msg;}
 
 function connect(){
  if(!window.google || !google.accounts){
@@ -80,108 +86,85 @@ function connect(){
   return;
  }
  const client=google.accounts.oauth2.initTokenClient({
-  client_id:CLIENT_ID,
-  scope:SCOPE,
+  client_id:CLIENT_ID,scope:SCOPE,
   callback:async(response)=>{
-   if(response.error){
-    message("status","Google connection failed: "+response.error);
-    return;
-   }
+   if(response.error){message("status","Google connection failed: "+response.error);return;}
    token=response.access_token;
    try{
-    const r=await fetch("https://www.googleapis.com/blogger/v3/users/self/blogs",{
-     headers:{Authorization:"Bearer "+token}
-    });
+    const r=await fetch("https://www.googleapis.com/blogger/v3/users/self/blogs",{headers:{Authorization:"Bearer "+token}});
     const data=await r.json();
     if(!r.ok) throw new Error(data.error?.message||"Could not load blogs");
     const blog=(data.items||[]).find(b=>(b.url||"").includes(BLOG_HOST));
     if(!blog) throw new Error("Blockoryn blog was not found in this Google account.");
-    blogId=blog.id;
-    message("status","Connected successfully: "+blog.name);
-   }catch(e){
-    token="";
-    message("status",e.message);
-   }
+    blogId=blog.id;message("status","Connected successfully: "+blog.name);
+   }catch(e){token="";message("status",e.message);}
   }
  });
  client.requestAccessToken({prompt:"consent"});
 }
 
-function saveDraft(){
- const draft={
-  title:document.getElementById("title").value,
-  keyword:document.getElementById("keyword").value,
-  description:document.getElementById("description").value,
-  content:document.getElementById("content").value
+// JSONP avoids browser CORS restrictions for Apps Script ContentService.
+function generateArticle(){
+ const topic=document.getElementById("topic").value.trim();
+ if(!topic){message("aiResult","Please enter an article topic.");return;}
+ const button=document.getElementById("generateBtn");
+ button.disabled=true;message("aiResult","Gemini is researching and writing your article...");
+ const callbackName="blockorynGeminiCallback";
+ const old=document.getElementById("geminiJsonp");if(old)old.remove();
+ if(aiTimer)clearTimeout(aiTimer);
+ window[callbackName]=function(data){
+  clearTimeout(aiTimer);button.disabled=false;
+  const script=document.getElementById("geminiJsonp");if(script)script.remove();
+  try{delete window[callbackName];}catch(e){window[callbackName]=undefined;}
+  if(!data||!data.success){message("aiResult","Generation failed: "+((data&&data.error)||"Unknown backend error"));return;}
+  const a=data.article||{};
+  document.getElementById("title").value=a.title||"";
+  document.getElementById("keyword").value=a.keyword||((a.labels||[])[0]||"");
+  document.getElementById("description").value=a.description||"";
+  document.getElementById("content").value=a.content||"";
+  message("aiResult","Article generated. Review the title, description and full content before publishing.");
  };
- localStorage.setItem("blockorynDraft",JSON.stringify(draft));
- message("result","Draft saved on this device.");
+ const script=document.createElement("script");script.id="geminiJsonp";
+ script.onerror=function(){clearTimeout(aiTimer);button.disabled=false;script.remove();window[callbackName]=undefined;message("aiResult","Could not reach the AI backend. Check the backend deployment and try again.");};
+ script.src=GEMINI_BACKEND+"?topic="+encodeURIComponent(topic)+"&callback="+callbackName+"&_="+Date.now();
+ document.body.appendChild(script);
+ aiTimer=setTimeout(function(){button.disabled=false;script.remove();window[callbackName]=undefined;message("aiResult","The request timed out. Try again in a moment.");},120000);
 }
 
+function saveDraft(){
+ const draft={title:document.getElementById("title").value,keyword:document.getElementById("keyword").value,description:document.getElementById("description").value,content:document.getElementById("content").value};
+ localStorage.setItem("blockorynDraft",JSON.stringify(draft));message("result","Draft saved on this device.");
+}
 function copyArticle(){
  const content=document.getElementById("content").value;
- if(!content){message("result","Write article content first.");return;}
- navigator.clipboard.writeText(content)
- .then(()=>message("result","Article content copied."))
- .catch(()=>message("result","Copy was blocked by your browser."));
+ if(!content){message("result","Write or generate article content first.");return;}
+ navigator.clipboard.writeText(content).then(()=>message("result","Article content copied.")).catch(()=>message("result","Copy was blocked by your browser."));
 }
-
 function downloadArticle(){
  const title=document.getElementById("title").value||"blockoryn-article";
  const content=document.getElementById("content").value;
  const file=new Blob([content],{type:"text/plain;charset=utf-8"});
- const url=URL.createObjectURL(file);
- const a=document.createElement("a");
- a.href=url;
- a.download=title.replace(/[^a-z0-9]/gi,"-")+".txt";
- a.click();
- URL.revokeObjectURL(url);
+ const url=URL.createObjectURL(file);const a=document.createElement("a");
+ a.href=url;a.download=title.replace(/[^a-z0-9]/gi,"-")+".txt";a.click();URL.revokeObjectURL(url);
 }
-
 async function publish(){
- if(!token||!blogId){
-  message("result","Connect your Blogger account first.");
-  return;
- }
+ if(!token||!blogId){message("result","Connect your Blogger account first.");return;}
  const title=document.getElementById("title").value.trim();
  const content=document.getElementById("content").value.trim();
  const keyword=document.getElementById("keyword").value.trim();
- if(!title||!content){
-  message("result","Please enter an article title and content.");
-  return;
- }
- if(!confirm("Publish this article to Blockoryn now?")) return;
+ if(!title||!content){message("result","Please enter an article title and content.");return;}
+ if(!confirm("Publish this article to Blockoryn now?"))return;
  message("result","Publishing...");
- const post={title:title,content:content};
- if(keyword) post.labels=[keyword];
+ const post={title:title,content:content};if(keyword)post.labels=[keyword];
  try{
-  const r=await fetch(
-   "https://www.googleapis.com/blogger/v3/blogs/"+blogId+"/posts/",
-   {
-    method:"POST",
-    headers:{
-     Authorization:"Bearer "+token,
-     "Content-Type":"application/json"
-    },
-    body:JSON.stringify(post)
-   }
-  );
-  const data=await r.json();
-  if(!r.ok) throw new Error(data.error?.message||"Publishing failed");
+  const r=await fetch("https://www.googleapis.com/blogger/v3/blogs/"+blogId+"/posts/",{method:"POST",headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify(post)});
+  const data=await r.json();if(!r.ok)throw new Error(data.error?.message||"Publishing failed");
   message("result","Published successfully! "+(data.url||""));
- }catch(e){
-  message("result","Error: "+e.message);
- }
+ }catch(e){message("result","Error: "+e.message);}
 }
-
 try{
  const saved=JSON.parse(localStorage.getItem("blockorynDraft")||"null");
- if(saved){
-  document.getElementById("title").value=saved.title||"";
-  document.getElementById("keyword").value=saved.keyword||"";
-  document.getElementById("description").value=saved.description||"";
-  document.getElementById("content").value=saved.content||"";
- }
+ if(saved){document.getElementById("title").value=saved.title||"";document.getElementById("keyword").value=saved.keyword||"";document.getElementById("description").value=saved.description||"";document.getElementById("content").value=saved.content||"";}
 }catch(e){}
 </script>
 </body>
